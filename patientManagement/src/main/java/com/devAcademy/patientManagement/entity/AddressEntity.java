@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -25,10 +27,16 @@ public class AddressEntity {
 	
 	private String pin;
 	
+	@ManyToOne
+    @JoinColumn(name="patient_id")
+    private PatientEntity patient;
+	
 	public AddressEntity() {
 	}
 
-	public AddressEntity(Long id, String houseNumber, String city, String state, String country, String pin) {
+
+	public AddressEntity(Long id, String houseNumber, String city, String state, String country, String pin,
+			PatientEntity patientEntity) {
 		super();
 		this.id = id;
 		this.houseNumber = houseNumber;
@@ -36,6 +44,7 @@ public class AddressEntity {
 		this.state = state;
 		this.country = country;
 		this.pin = pin;
+		this.patient = patientEntity;
 	}
 
 	public Long getId() {
@@ -85,7 +94,14 @@ public class AddressEntity {
 	public void setPin(String pin) {
 		this.pin = pin;
 	}
-	
+
+	public PatientEntity getPatientEntity() {
+		return patient;
+	}
+
+	public void setPatientEntity(PatientEntity patientEntity) {
+		this.patient = patientEntity;
+	}	
 	
 	
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,6 +15,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "patient")
 public class PatientEntity {
+	@Column(name = "patient_id")
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -33,6 +35,7 @@ public class PatientEntity {
 	private List<Long> telephoneNumber;
 	
 	@Column(name = "address")
+	@OneToMany(targetEntity=AddressEntity.class, mappedBy="patient", fetch=FetchType.EAGER)
 	//@OneToMany(mappedBy = )
 	private List<AddressEntity> address;
 	
