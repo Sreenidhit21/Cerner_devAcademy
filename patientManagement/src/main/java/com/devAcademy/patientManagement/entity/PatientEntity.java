@@ -3,6 +3,7 @@ package com.devAcademy.patientManagement.entity;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,9 +15,10 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "patient")
-public class PatientEntity {
-	@Column(name = "patient_id")
+public class PatientEntity{
+	
 	@Id
+	@Column(name = "patient_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
@@ -25,8 +27,11 @@ public class PatientEntity {
 	@Column(name = "date_of_birth")
 	private Date dateOfBirth;
 	
-	@Column(name = "govt_id")
-	private Long govtId;
+	@Column(name = "govt_id", unique = true)
+	private String govtId;
+	
+	@Column(name ="govt_id_type")
+	private String govtIdType;
 	
 	@Column(name = "reason_for_not_sharing_id")
 	private String reasonForNotSharingId;
@@ -35,21 +40,21 @@ public class PatientEntity {
 	private List<Long> telephoneNumber;
 	
 	@Column(name = "address")
-	@OneToMany(targetEntity=AddressEntity.class, mappedBy="patient", fetch=FetchType.EAGER)
-	//@OneToMany(mappedBy = )
+	@OneToMany(targetEntity=AddressEntity.class, mappedBy="patient", fetch=FetchType.EAGER, cascade={CascadeType.ALL})
 	private List<AddressEntity> address;
 	
 	public PatientEntity() {
 		
 	}
-	
-	public PatientEntity(Long id, String name, Date dateOfBirth, Long govtId, String reasonForNotSharingId,
-			List<Long> telephoneNumber, List<AddressEntity> address) {
+		
+	public PatientEntity(Long id, String name, Date dateOfBirth, String govtId, String govtIdType,
+			String reasonForNotSharingId, List<Long> telephoneNumber, List<AddressEntity> address) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.dateOfBirth = dateOfBirth;
 		this.govtId = govtId;
+		this.govtIdType = govtIdType;
 		this.reasonForNotSharingId = reasonForNotSharingId;
 		this.telephoneNumber = telephoneNumber;
 		this.address = address;
@@ -79,11 +84,11 @@ public class PatientEntity {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	public Long getGovtId() {
+	public String getGovtId() {
 		return govtId;
 	}
 
-	public void setGovtId(Long govtId) {
+	public void setGovtId(String govtId) {
 		this.govtId = govtId;
 	}
 

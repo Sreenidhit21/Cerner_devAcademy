@@ -1,5 +1,6 @@
 package com.devAcademy.patientManagement.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +12,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "address")
-public class AddressEntity {
+public class AddressEntity{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -27,13 +28,13 @@ public class AddressEntity {
 	
 	private String pin;
 	
-	@ManyToOne
+	//@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="patient_id")
-    private PatientEntity patient;
+	private PatientEntity patient;
 	
 	public AddressEntity() {
 	}
-
 
 	public AddressEntity(Long id, String houseNumber, String city, String state, String country, String pin,
 			PatientEntity patientEntity) {
