@@ -85,5 +85,4 @@ public class AddressEntity {
 	public void setPin(String pin) {
 		this.pin = pin;
 	}
-
 }

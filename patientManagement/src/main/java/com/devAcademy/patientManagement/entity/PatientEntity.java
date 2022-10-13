@@ -16,48 +16,49 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "patient")
-public class PatientEntity{
-	
+public class PatientEntity {
+
 	@Id
 	@Column(name = "patient_id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	private String name;
-	
+
 	@Column(name = "date_of_birth")
 	private Date dateOfBirth;
-	
-	@Column(name = "govt_id", unique = true)
-	private String govtId;
-	
-	@Column(name ="govt_id_type")
-	private String govtIdType;
-	
-	@Column(name = "reason_for_not_sharing_id")
-	private String reasonForNotSharingId;
-	
+
 	@Column(name = "telephone_number")
 	private List<Long> telephoneNumber;
-	
-	@OneToMany(targetEntity=AddressEntity.class, fetch=FetchType.LAZY, cascade={CascadeType.ALL})
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id", nullable =false)
+
+	@OneToMany(targetEntity = GovtIdEntity.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id", nullable = false)
+	private List<GovtIdEntity> govtIds;
+
+	@OneToMany(targetEntity = AddressEntity.class, fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id", nullable = false)
 	private List<AddressEntity> address;
-	
+
 	public PatientEntity() {
-		
+
 	}
-		
-	public PatientEntity(Long id, String name, Date dateOfBirth, String govtId, String govtIdType,
-			String reasonForNotSharingId, List<Long> telephoneNumber, List<AddressEntity> address) {
+
+	/**
+	 * @param id
+	 * @param name
+	 * @param dateOfBirth
+	 * @param telephoneNumber
+	 * @param govtIds
+	 * @param address
+	 */
+	public PatientEntity(Long id, String name, Date dateOfBirth, List<Long> telephoneNumber, List<GovtIdEntity> govtIds,
+			List<AddressEntity> address) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.dateOfBirth = dateOfBirth;
-		this.govtId = govtId;
-		this.govtIdType = govtIdType;
-		this.reasonForNotSharingId = reasonForNotSharingId;
 		this.telephoneNumber = telephoneNumber;
+		this.govtIds = govtIds;
 		this.address = address;
 	}
 
@@ -85,28 +86,26 @@ public class PatientEntity{
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	public String getGovtId() {
-		return govtId;
-	}
-
-	public void setGovtId(String govtId) {
-		this.govtId = govtId;
-	}
-
-	public String getReasonForNotSharingId() {
-		return reasonForNotSharingId;
-	}
-
-	public void setReasonForNotSharingId(String reasonForNotSharingId) {
-		this.reasonForNotSharingId = reasonForNotSharingId;
-	}
-
 	public List<Long> getTelephoneNumber() {
 		return telephoneNumber;
 	}
 
 	public void setTelephoneNumber(List<Long> telephoneNumber) {
 		this.telephoneNumber = telephoneNumber;
+	}
+
+	/**
+	 * @return the govtIds
+	 */
+	public List<GovtIdEntity> getGovtIds() {
+		return govtIds;
+	}
+
+	/**
+	 * @param govtIds the govtIds to set
+	 */
+	public void setGovtIds(List<GovtIdEntity> govtIds) {
+		this.govtIds = govtIds;
 	}
 
 	public List<AddressEntity> getAddress() {
@@ -116,9 +115,5 @@ public class PatientEntity{
 	public void setAddress(List<AddressEntity> address) {
 		this.address = address;
 	}
-	
-	
-	
-
 
 }
