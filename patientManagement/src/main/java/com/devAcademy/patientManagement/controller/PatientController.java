@@ -18,20 +18,20 @@ import com.devAcademy.patientManagement.service.PatientService;
 @RestController
 @RequestMapping("/patient")
 public class PatientController {
-	
+
 	private final PatientService patientService;
 
 	public PatientController(PatientService patientService) {
 		this.patientService = patientService;
 	}
-	
+
 	@GetMapping("/{id}")
-	public Optional<PatientEntity> getPatientDetailsById( @PathVariable("id") Long id) {
+	public Optional<PatientEntity> getPatientDetailsById(@PathVariable("id") Long id) {
 		return patientService.getPatientDetailsById(id);
 	}
-	
+
 	@GetMapping("/govtId/{id}")
-	public PatientEntity getPatientDetailsByGovtId( @PathVariable("id") String id) {
+	public PatientEntity getPatientDetailsByGovtId(@PathVariable("id") String id) {
 		return patientService.getPatientDetailsByGovtId(id);
 	}
 
@@ -44,21 +44,15 @@ public class PatientController {
 	public void deletePatientDetails(@PathVariable("patientId") Long patientId) {
 		patientService.deletePatientDetails(patientId);
 	}
-	
+
 	@PostMapping
 	public PatientEntity createPatientDetails(@RequestBody PatientEntity patientEntity) {
-		/*
-		 * if( patientEntity.getAddress()!=null && patientEntity.getAddress().size() > 0
-		 * ) { patientEntity.getAddress().stream().forEach( address -> {
-		 * address.setPatientEntity(patientEntity); } ); }
-		 */
 		return patientService.createPatientDetails(patientEntity);
 	}
-	
+
 	@PutMapping
-	public PatientEntity updatePatientDetails( @RequestBody PatientEntity patientEntity) {
+	public PatientEntity updatePatientDetails(@RequestBody PatientEntity patientEntity) {
 		return patientService.updatePatientDetails(patientEntity);
 	}
-
 
 }
