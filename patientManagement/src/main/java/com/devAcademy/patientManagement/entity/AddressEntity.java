@@ -1,43 +1,34 @@
 package com.devAcademy.patientManagement.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "address")
-public class AddressEntity{
+public class AddressEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	@Column(name = "house_number")
 	private String houseNumber;
-	
+
 	private String city;
-	
+
 	private String state;
-	
+
 	private String country;
-	
+
 	private String pin;
-	
-	//@ManyToOne(fetch=FetchType.LAZY)
-	@ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="patient_id")
-	private PatientEntity patient;
-	
+
 	public AddressEntity() {
 	}
 
-	public AddressEntity(Long id, String houseNumber, String city, String state, String country, String pin,
-			PatientEntity patientEntity) {
+	public AddressEntity(Long id, String houseNumber, String city, String state, String country, String pin) {
 		super();
 		this.id = id;
 		this.houseNumber = houseNumber;
@@ -45,7 +36,6 @@ public class AddressEntity{
 		this.state = state;
 		this.country = country;
 		this.pin = pin;
-		this.patient = patientEntity;
 	}
 
 	public Long getId() {
@@ -95,15 +85,5 @@ public class AddressEntity{
 	public void setPin(String pin) {
 		this.pin = pin;
 	}
-
-	public PatientEntity getPatientEntity() {
-		return patient;
-	}
-
-	public void setPatientEntity(PatientEntity patientEntity) {
-		this.patient = patientEntity;
-	}	
-	
-	
 
 }
