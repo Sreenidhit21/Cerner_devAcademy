@@ -7,6 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/**
+ * GovtIdEntity
+ */
+
 @Entity
 @Table(name ="govtId")
 public class GovtIdEntity {
@@ -16,7 +20,7 @@ public class GovtIdEntity {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name = "govt_id")
+	@Column(name = "govt_id", unique = true)
 	private String govtId;
 	
 	@Column(name ="govt_id_type")

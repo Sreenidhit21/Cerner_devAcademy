@@ -12,6 +12,10 @@ import com.devAcademy.patientManagement.exception.PatientNotFoundException;
 import com.devAcademy.patientManagement.repository.PatientRepository;
 import com.devAcademy.patientManagement.service.PatientService;
 
+/**
+ * PatientServiceImpl
+ */
+
 @Service
 public class PatientServiceImpl implements PatientService {
 
@@ -21,6 +25,13 @@ public class PatientServiceImpl implements PatientService {
 		this.patientRepository = patientRepository;
 	}
 
+	/**
+	 * @param patientEntity
+	 * @return PatientEntity
+	 *         <p>
+	 *         createPatientDetails
+	 *         </p>
+	 */
 	@Override
 	public PatientEntity createPatientDetails(PatientEntity patientEntity)
 			throws GovtIdOrReasonForNotSharingRequiredException {
@@ -41,21 +52,42 @@ public class PatientServiceImpl implements PatientService {
 
 	}
 
+	/**
+	 * @param patientEntity
+	 * @return PatientEntity
+	 *         <p>
+	 *         updatePatientDetails
+	 *         </p>
+	 */
 	@Override
 	public PatientEntity updatePatientDetails(PatientEntity patientEntity) {
 		return patientRepository.save(patientEntity);
 	}
 
+	/**
+	 * @param patientId
+	 * @return Optional<PatientEntity>
+	 *         <p>
+	 *         getPatientDetailsById
+	 *         </p>
+	 */
 	@Override
 	public Optional<PatientEntity> getPatientDetailsById(Long patientId) throws PatientNotFoundException {
 		Optional<PatientEntity> patientEntity = patientRepository.findById(patientId);
-		if (patientEntity==null||patientEntity.isEmpty() ) {
+		if (patientEntity == null || patientEntity.isEmpty()) {
 			throw new PatientNotFoundException("Patient not found with Id :" + patientId);
 		} else {
 			return patientEntity;
 		}
 	}
 
+	/**
+	 * @param patientGovtId
+	 * @return PatientEntity
+	 *         <p>
+	 *         getPatientDetailsByGovtId
+	 *         </p>
+	 */
 	@Override
 	public PatientEntity getPatientDetailsByGovtId(String patientGovtId) throws PatientNotFoundException {
 		PatientEntity patientEntity = patientRepository.findByGovtIdIgnoreCase(patientGovtId);
@@ -66,6 +98,13 @@ public class PatientServiceImpl implements PatientService {
 		}
 	}
 
+	/**
+	 * @param patientName
+	 * @return List<PatientEntity>
+	 *         <p>
+	 *         getPatientDetailsByName
+	 *         </p>
+	 */
 	@Override
 	public List<PatientEntity> getPatientDetailsByName(String patientName) throws PatientNotFoundException {
 		List<PatientEntity> patientList = patientRepository.findByNameContainingIgnoreCase(patientName);
@@ -76,6 +115,12 @@ public class PatientServiceImpl implements PatientService {
 		}
 	}
 
+	/**
+	 * @param Long patientId
+	 *             <p>
+	 *             deletePatientDetails
+	 *             </p>
+	 */
 	@Override
 	public void deletePatientDetails(Long patientId) {
 		patientRepository.deleteById(patientId);

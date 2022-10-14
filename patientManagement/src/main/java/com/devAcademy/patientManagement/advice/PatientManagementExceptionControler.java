@@ -6,13 +6,14 @@ import java.util.Map;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.devAcademy.patientManagement.exception.GovtIdOrReasonForNotSharingRequiredException;
 import com.devAcademy.patientManagement.exception.PatientNotFoundException;
+
+import jakarta.validation.ConstraintViolationException;
 
 /**
  * PatientManagementExceptionControler
@@ -28,13 +29,13 @@ public class PatientManagementExceptionControler {
 	 *         </p>
 	 */
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public Map<String, String> handleInvalidArgumentException(MethodArgumentNotValidException ex) {
-		Map<String, String> exceptionMap = new HashMap<>();
-		ex.getBindingResult().getFieldErrors().forEach(error -> {
-			exceptionMap.put(error.getField(), error.getDefaultMessage());
+	@ExceptionHandler(ConstraintViolationException.class)
+	public Map<String, String> handleInvalidArgumentException(ConstraintViolationException ex) {
+		Map<String, String> exception = new HashMap<>();
+		ex.getConstraintViolations().forEach(error -> {
+			exception.put("error message", error.getMessage());
 		});
-		return exceptionMap;
+		return exception;
 	}
 
 	/**

@@ -12,7 +12,7 @@ import com.devAcademy.patientManagement.entity.PatientEntity;
 @Repository
 public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
 	
-	@Query(value = "select p.patient_id,p.date_of_birth,p.name,p.telephone_number from patient p join govt_id g on g.id=:govtid and p.patient_id=g.patient_id", nativeQuery = true)
+	@Query(value = "select p.patient_id,p.date_of_birth,p.name,p.telephone_number from patient p join govt_id g on g.govt_id=:govtid and p.patient_id=g.patient_id", nativeQuery = true)
 	public PatientEntity findByGovtIdIgnoreCase(@Param("govtid") String govtId);
 
 	public List<PatientEntity> findByNameContainingIgnoreCase(String Name);

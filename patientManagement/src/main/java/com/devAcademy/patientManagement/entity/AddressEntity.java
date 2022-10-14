@@ -7,6 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/**
+ * AddressEntity entity class for Address
+ */
+
 @Entity
 @Table(name = "address")
 public class AddressEntity {
