@@ -13,6 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "patient")
@@ -23,11 +25,14 @@ public class PatientEntity {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	@NotBlank(message = "Name is mandatory")
 	private String name;
 
+	@NotNull(message = "Date of birth is mandatory")
 	@Column(name = "date_of_birth")
 	private Date dateOfBirth;
 
+	@NotNull(message = "Telephone number is mandatory")
 	@Column(name = "telephone_number")
 	private List<Long> telephoneNumber;
 
@@ -62,34 +67,58 @@ public class PatientEntity {
 		this.address = address;
 	}
 
+	/**
+	 * @return the id
+	 */
 	public Long getId() {
 		return id;
 	}
 
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+	/**
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @param name the name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * @return the dateOfBirth
+	 */
 	public Date getDateOfBirth() {
 		return dateOfBirth;
 	}
 
+	/**
+	 * @param dateOfBirth the dateOfBirth to set
+	 */
 	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 
+	/**
+	 * @return the telephoneNumber
+	 */
 	public List<Long> getTelephoneNumber() {
 		return telephoneNumber;
 	}
 
+	/**
+	 * @param telephoneNumber the telephoneNumber to set
+	 */
 	public void setTelephoneNumber(List<Long> telephoneNumber) {
 		this.telephoneNumber = telephoneNumber;
 	}
@@ -108,12 +137,17 @@ public class PatientEntity {
 		this.govtIds = govtIds;
 	}
 
+	/**
+	 * @return the address
+	 */
 	public List<AddressEntity> getAddress() {
 		return address;
 	}
 
+	/**
+	 * @param address the address to set
+	 */
 	public void setAddress(List<AddressEntity> address) {
 		this.address = address;
 	}
-
 }

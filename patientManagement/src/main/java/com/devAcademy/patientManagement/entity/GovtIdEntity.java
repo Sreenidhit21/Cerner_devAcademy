@@ -2,6 +2,8 @@ package com.devAcademy.patientManagement.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -11,6 +13,10 @@ public class GovtIdEntity {
 	
 	@Id
 	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	
+	@Column(name = "govt_id")
 	private String govtId;
 	
 	@Column(name ="govt_id_type")
@@ -22,12 +28,21 @@ public class GovtIdEntity {
 	public GovtIdEntity() {
 	}
 
-	public GovtIdEntity(String govtId, String govtIdType, String reasonForNotSharingId) {
+	
+	/**
+	 * @param id
+	 * @param govtId
+	 * @param govtIdType
+	 * @param reasonForNotSharingId
+	 */
+	public GovtIdEntity(Long id, String govtId, String govtIdType, String reasonForNotSharingId) {
 		super();
+		this.id = id;
 		this.govtId = govtId;
 		this.govtIdType = govtIdType;
 		this.reasonForNotSharingId = reasonForNotSharingId;
 	}
+
 
 	/**
 	 * @return the govtId
@@ -70,5 +85,23 @@ public class GovtIdEntity {
 	public void setReasonForNotSharingId(String reasonForNotSharingId) {
 		this.reasonForNotSharingId = reasonForNotSharingId;
 	}
+
+
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	
 
 }
