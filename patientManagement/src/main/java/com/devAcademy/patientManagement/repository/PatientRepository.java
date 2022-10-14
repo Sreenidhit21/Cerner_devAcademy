@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import com.devAcademy.patientManagement.entity.PatientEntity;
 
+/**
+ * PatientRepository
+ */
 @Repository
 public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
 	

@@ -7,6 +7,9 @@ import com.devAcademy.patientManagement.entity.PatientEntity;
 import com.devAcademy.patientManagement.exception.GovtIdOrReasonForNotSharingRequiredException;
 import com.devAcademy.patientManagement.exception.PatientNotFoundException;
 
+/**
+ * PatientService
+ */
 public interface PatientService {
 	PatientEntity createPatientDetails(PatientEntity patientEntity) throws GovtIdOrReasonForNotSharingRequiredException;
 
