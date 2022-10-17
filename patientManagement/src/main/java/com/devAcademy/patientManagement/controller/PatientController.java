@@ -17,6 +17,7 @@ import com.devAcademy.patientManagement.entity.PatientEntity;
 import com.devAcademy.patientManagement.exception.GovtIdOrReasonForNotSharingRequiredException;
 import com.devAcademy.patientManagement.exception.PatientNotFoundException;
 import com.devAcademy.patientManagement.service.PatientService;
+
 /**
  * PatientController rest controller for Patient Management
  */

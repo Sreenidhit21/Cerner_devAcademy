@@ -28,6 +28,7 @@ public class PatientServiceImpl implements PatientService {
 	/**
 	 * @param patientEntity
 	 * @return PatientEntity
+	 * @throws GovtIdOrReasonForNotSharingRequiredException
 	 *         <p>
 	 *         createPatientDetails
 	 *         </p>

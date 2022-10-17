@@ -19,7 +19,6 @@ import jakarta.validation.constraints.NotBlank;
  * PatientEntity
  */
 
-
 @Entity
 @Table(name = "patient")
 public class PatientEntity {
