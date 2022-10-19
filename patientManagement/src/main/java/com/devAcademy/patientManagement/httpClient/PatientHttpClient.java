@@ -35,16 +35,13 @@ public class PatientHttpClient {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static PatientEntity getPatientDetailsById(Long id) throws IOException, InterruptedException {
+	public static HttpResponse<String> getPatientDetailsById(Long id) throws IOException, InterruptedException {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder().GET().header("Content.Type", "application/json")
 				.uri(URI.create(PATIENT_API_URL + id)).build();
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-		ObjectMapper mapper = new ObjectMapper();
-		PatientEntity patientEntity = mapper.readValue(response.body(), new TypeReference<PatientEntity>() {
-		});
-		return patientEntity;
+		
+		return response;
 	}
 
 	/**
@@ -53,16 +50,13 @@ public class PatientHttpClient {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static PatientEntity getPatientDetailsByGovtId(Long id) throws IOException, InterruptedException {
+	public static HttpResponse<String> getPatientDetailsByGovtId(String id) throws IOException, InterruptedException {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder().GET().header("Content.Type", "application/json")
 				.uri(URI.create(GET_BY_GOVT_ID_API_URL + id)).build();
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-		ObjectMapper mapper = new ObjectMapper();
-		PatientEntity patientEntity = mapper.readValue(response.body(), new TypeReference<PatientEntity>() {
-		});
-		return patientEntity;
+		
+		return response;
 	}
 
 	/**
@@ -71,16 +65,12 @@ public class PatientHttpClient {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static PatientEntity getPatientDetailsByName(String name) throws IOException, InterruptedException {
+	public static HttpResponse<String> getPatientDetailsByName(String name) throws IOException, InterruptedException {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder().GET().header("Content.Type", "application/json")
 				.uri(URI.create(GET_BY_NAME_API_URL + name)).build();
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-		ObjectMapper mapper = new ObjectMapper();
-		PatientEntity patientEntity = mapper.readValue(response.body(), new TypeReference<PatientEntity>() {
-		});
-		return patientEntity;
+	return response;
 	}
 
 	/**
