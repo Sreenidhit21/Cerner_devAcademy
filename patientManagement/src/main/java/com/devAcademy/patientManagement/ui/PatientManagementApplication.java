@@ -42,6 +42,7 @@ public class PatientManagementApplication {
 
 	private static Text text;
 	private static Tree tree;
+	private static TreeItem selectedItem;
 
 	/**
 	 * 
@@ -93,15 +94,32 @@ public class PatientManagementApplication {
 		btnCreatePatient.setBounds(32, 21, 96, 25);
 		btnCreatePatient.setText("Create Patient");
 
-		Button btnUpdatePatient = new Button(shell, SWT.NONE);
+		Button btnUpdatePatient = new Button(shell, SWT.PUSH);
 		btnUpdatePatient.setEnabled(false);
 		btnUpdatePatient.setBounds(162, 21, 110, 25);
 		btnUpdatePatient.setText("Update Patient");
+		btnUpdatePatient.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				
+			}
 
-		Button btnDeletePatient = new Button(shell, SWT.NONE);
+		});
+
+		Button btnDeletePatient = new Button(shell, SWT.PUSH);
 		btnDeletePatient.setEnabled(false);
 		btnDeletePatient.setBounds(306, 21, 98, 25);
 		btnDeletePatient.setText("Delete Patient");
+		btnDeletePatient.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				
+				deletePatientById();
+				btnDeletePatient.setSelection(false);
+				btnUpdatePatient.setSelection(false);
+			}
+
+		});
 
 		text = new Text(shell, SWT.BORDER);
 		text.setBounds(285, 96, 148, 21);
@@ -135,7 +153,9 @@ public class PatientManagementApplication {
 					openDialog("select Patient ID or Govt ID or Patient Name ");
 
 				} else {
-					tree.clearAll(true);
+					tree.removeAll();
+					btnDeletePatient.setSelection(false);
+					btnUpdatePatient.setSelection(false);
 					if (btnPatientId.getSelection()) {
 						getPatientById();
 					}
@@ -156,13 +176,34 @@ public class PatientManagementApplication {
 		setTreeColumn();
 		tree.addListener (SWT.MouseDown, event -> {
 			Point point = new Point (event.x, event.y);
-			TreeItem selectedItem = tree.getItem (point);
+			selectedItem = tree.getItem (point);
 			if (selectedItem != null) {
 				btnDeletePatient.setEnabled(true);
 				btnUpdatePatient.setEnabled(true);
 				System.out.println ("Mouse down: " + selectedItem);
 			}
 		});
+	}
+	
+	private static void deletePatientById() {
+		String id =selectedItem.getText(0);
+		
+		try {
+			System.out.println("selected item id : " +id);
+			HttpResponse<String> response =PatientHttpClient.deletePatientDetails(Long.valueOf(id));
+			if(response.statusCode()==500) {
+				openDialog("patient not found");
+			}else {
+				openDialog("patient with id "+id+" deleted successfully" );
+				tree.removeAll();
+			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static void setTreeColumn() {
@@ -342,7 +383,6 @@ public class PatientManagementApplication {
 	}
 
 	private static void openDialog(String message) {
-		System.out.println("no radio");
 		Shell dialog = new Shell();
 		dialog.setText("Alert");
 		dialog.setSize(350, 100);
