@@ -6,14 +6,12 @@ package com.devAcademy.patientManagement.ui;
 import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -79,8 +77,8 @@ public class CreateUpdatePatient {
 		txtId.setEditable(false);
 
 		Label lblName = new Label(shell, SWT.NONE);
-		lblName.setBounds(30, 60, 55, 15);
-		lblName.setText("Name");
+		lblName.setBounds(30, 60, 170, 15);
+		lblName.setText("Name  (* required)");
 
 		txtName = new Text(shell, SWT.BORDER);
 		txtName.setBounds(210, 60, 200, 19);
@@ -89,12 +87,8 @@ public class CreateUpdatePatient {
 		lblDateOfBirth.setBounds(30, 80, 78, 15);
 		lblDateOfBirth.setText("Date of birth");
 
-		 txtDateOfBirth = new Text(shell, SWT.BORDER);
+		txtDateOfBirth = new Text(shell, SWT.BORDER);
 		txtDateOfBirth.setBounds(210, 80, 200, 19);
-		//txtDateOfBirth = new DateTime(shell, SWT.CALENDAR | SWT.CALENDAR_WEEKNUMBERS);
-		//txtDateOfBirth.setBounds(210, 80, 200, 19);
-		// calendar.addSelectionListener (widgetSelectedAdapter(e -> System.out.println
-		// ("calendar date changed")));
 
 		Label lblPhoneNumber = new Label(shell, SWT.NONE);
 		lblPhoneNumber.setBounds(10, 100, 172, 15);
@@ -197,15 +191,15 @@ public class CreateUpdatePatient {
 		txtPin2.setBounds(210, 360, 200, 19);
 
 		Label lblPrimaryGovtId = new Label(shell, SWT.NONE);
-		lblPrimaryGovtId.setBounds(10, 380, 117, 15);
-		lblPrimaryGovtId.setText("Primary Govt ID");
+		lblPrimaryGovtId.setBounds(10, 380, 200, 15);
+		lblPrimaryGovtId.setText("Primary Govt ID (* required)");
 
 		pGovtId = new Text(shell, SWT.BORDER);
 		pGovtId.setBounds(210, 380, 200, 19);
 		pGovtId.setVisible(false);
 
 		Label lblGovtIdType = new Label(shell, SWT.NONE);
-		lblGovtIdType.setBounds(33, 400, 55, 15);
+		lblGovtIdType.setBounds(33, 400, 75, 15);
 		lblGovtIdType.setText("Govt ID type");
 
 		txtGovtIdType = new Text(shell, SWT.BORDER);
@@ -267,11 +261,9 @@ public class CreateUpdatePatient {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				if (patientEntity.getId() != null && !isView) {
-					System.out.println("update method");
 					updatePatientDetails(patientEntity);
 				}
 				if (patientEntity.getId() == null) {
-					System.out.println("create method");
 					createPatientDetails(patientEntity);
 				}
 				shell.close();
@@ -286,7 +278,7 @@ public class CreateUpdatePatient {
 	}
 
 	private static void disableAllText() {
-		txtId.setEditable(false);
+		txtId.setEnabled(false);
 		txtName.setEditable(false);
 		txtDateOfBirth.setEnabled(false);
 		txtPhoneNumber.setEditable(false);
@@ -312,15 +304,11 @@ public class CreateUpdatePatient {
 	private static void createPatientDetails(PatientEntity patientEntity) {
 		try {
 			getAllText(patientEntity);
-			System.out.println("createPatientDetails");
-		//	System.out.println(patientEntity.getDateOfBirth().toString());
 			HttpResponse<String> response = PatientHttpClient.createPatientDetails(patientEntity);
-			System.out.println(response.statusCode());
-			System.out.println(response.body());
-			if (response.statusCode() == 500) {
-				PatientManagementApplication.openDialog("Correct the data");
-			} else {
+			if (response.statusCode() == 200) {
 				PatientManagementApplication.populatePatientTree(response);
+			} else {
+				PatientManagementApplication.openDialog("Create patient failed. Please try again with correct data");
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -333,10 +321,10 @@ public class CreateUpdatePatient {
 		try {
 			getAllText(patientEntity);
 			HttpResponse<String> response = PatientHttpClient.updatePatientDetails(patientEntity);
-			if (response.statusCode() == 500) {
-				PatientManagementApplication.openDialog("Correct the data");
-			} else {
+			if (response.statusCode() == 200) {
 				PatientManagementApplication.populatePatientTree(response);
+			} else {
+				PatientManagementApplication.openDialog("update patient failed. Please try again with correct data");
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -346,24 +334,24 @@ public class CreateUpdatePatient {
 	}
 
 	private static void getAllText(PatientEntity patientEntity) {
-		if (txtId.getText() != null &&! txtId.getText().isBlank()) {
+		if (txtId.getText() != null && !txtId.getText().isBlank()) {
 			patientEntity.setId(Long.valueOf(txtId.getText()));
 		}
 
 		if (txtName.getText() == null || txtName.getText().isBlank()) {
 			PatientManagementApplication.openDialog("Patient name required");
 		}
-		
-		patientEntity.setName(txtName.getText());
 
-		// if(txtDateOfBirth.getYear()!=null && txtDateOfBirth.getMonth()!=null &&
-		// txtDateOfBirth.getDay()) {
-		//Date date = new Date(txtDateOfBirth.getYear(), txtDateOfBirth.getMonth(), txtDateOfBirth.getDay());
+		patientEntity.setName(txtName.getText());
 		patientEntity.setDateOfBirth(txtDateOfBirth.getText());
 		List<Long> phNums = new ArrayList<>();
 		try {
-			phNums.add(txtPhoneNumber.getText() !=null && !txtPhoneNumber.getText().isBlank() ?Long.valueOf(txtPhoneNumber.getText()):null);
-			phNums.add(txtAPhoneNumber.getText() !=null && !txtAPhoneNumber.getText().isBlank() ?Long.valueOf(txtAPhoneNumber.getText()):null);
+			phNums.add(txtPhoneNumber.getText() != null && !txtPhoneNumber.getText().isBlank()
+					? Long.valueOf(txtPhoneNumber.getText())
+					: null);
+			phNums.add(txtAPhoneNumber.getText() != null && !txtAPhoneNumber.getText().isBlank()
+					? Long.valueOf(txtAPhoneNumber.getText())
+					: null);
 		} catch (NumberFormatException e1) {
 			PatientManagementApplication.openDialog("Invalid phone number");
 			e1.printStackTrace();
@@ -371,68 +359,78 @@ public class CreateUpdatePatient {
 		patientEntity.setTelephoneNumber(phNums);
 		List<AddressEntity> addresses = new ArrayList<>();
 		AddressEntity currentAddress = new AddressEntity(
-				cAddress.getText() != null && !cAddress.getText().isBlank()? Long.valueOf(cAddress.getText()) : null, txtHouseNumber.getText(),
-				txtCity.getText(), txtState.getText(), txtCountry.getText(), txtPin.getText());
+				cAddress.getText() != null && !cAddress.getText().isBlank() ? Long.valueOf(cAddress.getText()) : null,
+				txtHouseNumber.getText(), txtCity.getText(), txtState.getText(), txtCountry.getText(),
+				txtPin.getText());
 		addresses.add(currentAddress);
 
 		AddressEntity perAddress = new AddressEntity(
-				pAddress.getText() != null && !pAddress.getText().isBlank()? Long.valueOf(pAddress.getText()) : null, txtHouse2.getText(),
-				txtCity2.getText(), txtState2.getText(), txtCountry2.getText(), txtPin2.getText());
+				pAddress.getText() != null && !pAddress.getText().isBlank() ? Long.valueOf(pAddress.getText()) : null,
+				txtHouse2.getText(), txtCity2.getText(), txtState2.getText(), txtCountry2.getText(), txtPin2.getText());
 		addresses.add(perAddress);
 		patientEntity.setAddress(addresses);
 
 		List<GovtIdEntity> govtIds = new ArrayList<>();
-		GovtIdEntity entity1 = new GovtIdEntity(pGovtId.getText() != null && !pGovtId.getText().isBlank() ? Long.valueOf(pGovtId.getText()) : null,
-				txtGovtId.getText(), txtGovtIdType.getText(), txtReason.getText());
-		GovtIdEntity entity2 = new GovtIdEntity(sGovtId.getText() != null && !sGovtId.getText().isBlank()? Long.valueOf(sGovtId.getText()) : null,
-				txtGovtId1.getText(), txtGovtIdType1.getText(), txtReason1.getText());
-		govtIds.add(entity2);
+		GovtIdEntity entity1 = new GovtIdEntity(
+				pGovtId.getText() != null && !pGovtId.getText().isBlank() ? Long.valueOf(pGovtId.getText()) : null,
+				!txtGovtId.getText().isBlank() ? txtGovtId.getText() : null, txtGovtIdType.getText(),
+				txtReason.getText());
+		GovtIdEntity entity2 = new GovtIdEntity(
+				sGovtId.getText() != null && !sGovtId.getText().isBlank() ? Long.valueOf(sGovtId.getText()) : null,
+				!txtGovtId1.getText().isBlank() ? txtGovtId1.getText() : null, txtGovtIdType1.getText(),
+				txtReason1.getText());
 		govtIds.add(entity1);
+		govtIds.add(entity2);
+		patientEntity.setGovtIds(govtIds);
 	}
 
 	private static void populateAllText(PatientEntity patientEntity) {
-		txtName.setText(patientEntity.getName());
-		/*
-		 * Date date = patientEntity.getDateOfBirth(); if (date != null) {
-		 * txtDateOfBirth.setDate(date.getYear(), date.getMonth(), date.getDay()); }
-		 */
+		txtName.setText(getEmptyStringIfNull(patientEntity.getName()));
+		txtDateOfBirth.setText(getEmptyStringIfNull(patientEntity.getDateOfBirth()));
 		txtId.setText(patientEntity.getId().toString());
 		List<Long> phNums = patientEntity.getTelephoneNumber();
 		if (phNums != null && phNums.size() >= 1) {
-			txtPhoneNumber.setText(phNums.get(0).toString());
+			txtPhoneNumber.setText(phNums.get(0) != null ? phNums.get(0).toString() : "");
 			txtAPhoneNumber.setText(phNums.size() >= 2 && phNums.get(1) != null ? phNums.get(1).toString() : "");
 		}
 		List<GovtIdEntity> govtIds = patientEntity.getGovtIds();
-		if (govtIds != null && govtIds.size() >= 1) {
-			pGovtId.setText(govtIds.get(0).getId().toString());
-			txtGovtIdType.setText(govtIds.get(0).getGovtIdType());
-			txtGovtId.setText(govtIds.get(0).getGovtId());
-			txtReason.setText(govtIds.get(0).getReasonForNotSharingId());
-			if (govtIds.size() >= 2) {
-				sGovtId.setText(govtIds.get(1).getId().toString());
-				txtGovtIdType1.setText(govtIds.get(1).getGovtIdType());
-				txtGovtId1.setText(govtIds.get(1).getGovtId());
-				txtReason1.setText(govtIds.get(1).getReasonForNotSharingId());
+		if (govtIds != null && govtIds.size() >= 1 && govtIds.get(0) != null) {
+			pGovtId.setText(govtIds.get(0).getId() != null ? govtIds.get(0).getId().toString() : "");
+			txtGovtIdType.setText(getEmptyStringIfNull(govtIds.get(0).getGovtIdType()));
+			txtGovtId.setText(getEmptyStringIfNull(govtIds.get(0).getGovtId()));
+			txtReason.setText(getEmptyStringIfNull(govtIds.get(0).getReasonForNotSharingId()));
+			if (govtIds.size() >= 2 && govtIds.get(1) != null) {
+				sGovtId.setText(govtIds.get(1).getId() != null ? govtIds.get(1).getId().toString() : "");
+				txtGovtIdType1.setText(getEmptyStringIfNull(govtIds.get(1).getGovtIdType()));
+				txtGovtId1.setText(getEmptyStringIfNull(govtIds.get(1).getGovtId()));
+				txtReason1.setText(getEmptyStringIfNull(govtIds.get(1).getReasonForNotSharingId()));
 			}
 		}
 
 		List<AddressEntity> addresses = patientEntity.getAddress();
-		if (addresses != null && addresses.size() >= 1) {
-			cAddress.setText(addresses.get(0).getId().toString());
-			txtHouseNumber.setText(addresses.get(0).getHouseNumber());
-			txtCity.setText(addresses.get(0).getCity());
-			txtState.setText(addresses.get(0).getState());
-			txtCountry.setText(addresses.get(0).getCountry());
-			txtPin.setText(addresses.get(0).getPin());
-			if (addresses.size() >= 2) {
-				pAddress.setText(addresses.get(1).getId().toString());
-				txtHouse2.setText(addresses.get(1).getHouseNumber());
-				txtCity2.setText(addresses.get(1).getCity());
-				txtState2.setText(addresses.get(1).getState());
-				txtCountry2.setText(addresses.get(1).getCountry());
-				txtPin2.setText(addresses.get(1).getPin());
+		if (addresses != null && addresses.size() >= 1 && addresses.get(0) != null) {
+			cAddress.setText(addresses.get(0).getId() != null ? addresses.get(0).getId().toString() : "");
+			txtHouseNumber.setText(getEmptyStringIfNull(addresses.get(0).getHouseNumber()));
+			txtCity.setText(getEmptyStringIfNull(addresses.get(0).getCity()));
+			txtState.setText(getEmptyStringIfNull(addresses.get(0).getState()));
+			txtCountry.setText(getEmptyStringIfNull(addresses.get(0).getCountry()));
+			txtPin.setText(getEmptyStringIfNull(addresses.get(0).getPin()));
+			if (addresses.size() >= 2 && addresses.get(1) != null) {
+				pAddress.setText(addresses.get(1).getId() != null ? addresses.get(1).getId().toString() : "");
+				txtHouse2.setText(getEmptyStringIfNull(addresses.get(1).getHouseNumber()));
+				txtCity2.setText(getEmptyStringIfNull(addresses.get(1).getCity()));
+				txtState2.setText(getEmptyStringIfNull(addresses.get(1).getState()));
+				txtCountry2.setText(getEmptyStringIfNull(addresses.get(1).getCountry()));
+				txtPin2.setText(getEmptyStringIfNull(addresses.get(1).getPin()));
 			}
 		}
+	}
+
+	private static String getEmptyStringIfNull(String value) {
+		if (value == null) {
+			return "";
+		}
+		return value;
 	}
 
 }

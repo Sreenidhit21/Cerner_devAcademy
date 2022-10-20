@@ -5,7 +5,6 @@ package com.devAcademy.patientManagement.ui;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -80,13 +79,23 @@ public class PatientManagementApplication {
 
 	private static void setContentOnMainShell(Shell shell) {
 		Button btnCreatePatient = new Button(shell, SWT.PUSH);
+
+		Button btnUpdatePatient = new Button(shell, SWT.PUSH);
+		btnUpdatePatient.setEnabled(false);
+
+		Button btnViewPatient = new Button(shell, SWT.PUSH);
+		btnViewPatient.setEnabled(false);
+
+		Button btnDeletePatient = new Button(shell, SWT.PUSH);
+		btnDeletePatient.setEnabled(false);
+
 		btnCreatePatient.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				tree.removeAll();
-//				btnDeletePatient.setSelection(false);
-				// btnUpdatePatient.setSelection(false);
-				// btnViewPatient.setSelection(false);
+				btnUpdatePatient.setEnabled(false);
+				btnDeletePatient.setEnabled(false);
+				btnViewPatient.setEnabled(false);
 				PatientEntity patientEntity = new PatientEntity();
 				CreateUpdatePatient.setContentOnCreateUpdateShell(display, patientEntity, false);
 
@@ -95,35 +104,32 @@ public class PatientManagementApplication {
 		btnCreatePatient.setBounds(32, 21, 96, 25);
 		btnCreatePatient.setText("Create Patient");
 
-		Button btnUpdatePatient = new Button(shell, SWT.PUSH);
-		btnUpdatePatient.setEnabled(false);
 		btnUpdatePatient.setBounds(162, 21, 110, 25);
 		btnUpdatePatient.setText("Update Patient");
 		btnUpdatePatient.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				//tree.removeAll();
-				PatientEntity patientEntity =  treeItemToPatientEntityMapping();
+				PatientEntity patientEntity = treeItemToPatientEntityMapping();
+				tree.removeAll();
+				btnUpdatePatient.setEnabled(false);
+				btnDeletePatient.setEnabled(false);
+				btnViewPatient.setEnabled(false);
 				CreateUpdatePatient.setContentOnCreateUpdateShell(display, patientEntity, false);
 			}
 
 		});
 
-		Button btnViewPatient = new Button(shell, SWT.PUSH);
-		btnViewPatient.setEnabled(false);
 		btnViewPatient.setBounds(426, 21, 100, 25);
 		btnViewPatient.setText("View Patient");
 		btnViewPatient.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				PatientEntity patientEntity =  treeItemToPatientEntityMapping();
+				PatientEntity patientEntity = treeItemToPatientEntityMapping();
 				CreateUpdatePatient.setContentOnCreateUpdateShell(display, patientEntity, true);
 			}
 
 		});
 
-		Button btnDeletePatient = new Button(shell, SWT.PUSH);
-		btnDeletePatient.setEnabled(false);
 		btnDeletePatient.setBounds(306, 21, 98, 25);
 		btnDeletePatient.setText("Delete Patient");
 		btnDeletePatient.addMouseListener(new MouseAdapter() {
@@ -131,9 +137,9 @@ public class PatientManagementApplication {
 			public void mouseDown(MouseEvent e) {
 
 				deletePatientById();
-				btnDeletePatient.setSelection(false);
-				btnUpdatePatient.setSelection(false);
-				btnViewPatient.setSelection(false);
+				btnDeletePatient.setEnabled(false);
+				btnUpdatePatient.setEnabled(false);
+				btnViewPatient.setEnabled(false);
 			}
 
 		});
@@ -164,15 +170,14 @@ public class PatientManagementApplication {
 		btnSearch.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				System.out.println("btn search mouse down");
 				if (!btnPatientId.getSelection() && !btnGovtId.getSelection() && !btnPatientName.getSelection()) {
 					openDialog("select Patient ID or Govt ID or Patient Name ");
 
 				} else {
 					tree.removeAll();
-					btnDeletePatient.setSelection(false);
-					btnUpdatePatient.setSelection(false);
-					btnViewPatient.setSelection(false);
+					btnDeletePatient.setEnabled(false);
+					btnUpdatePatient.setEnabled(false);
+					btnViewPatient.setEnabled(false);
 					if (btnPatientId.getSelection()) {
 						getPatientById();
 					} else if (btnGovtId.getSelection()) {
@@ -193,25 +198,34 @@ public class PatientManagementApplication {
 		tree.addListener(SWT.MouseDown, event -> {
 			Point point = new Point(event.x, event.y);
 			selectedItem = tree.getItem(point);
-			if (selectedItem != null) {
+			if (selectedItem != null && tree.getSelectionCount() > 0) {
 				btnDeletePatient.setEnabled(true);
 				btnUpdatePatient.setEnabled(true);
 				btnViewPatient.setEnabled(true);
+			} else {
+				btnDeletePatient.setEnabled(false);
+				btnUpdatePatient.setEnabled(false);
+				btnViewPatient.setEnabled(false);
 			}
 		});
 	}
-	
+
 	public static PatientEntity treeItemToPatientEntityMapping() {
 		PatientEntity patientEntity = new PatientEntity();
-		System.out.println("selected item id"+selectedItem.getText(0));
-		patientEntity.setId(Long.valueOf(selectedItem.getText(0)));
-		patientEntity.setName(selectedItem.getText(1));
-		patientEntity.setDateOfBirth(selectedItem.getText(2));
-		List<Long> phNums = new ArrayList<>();
-		phNums.add(selectedItem.getText(3)!=null &&! selectedItem.getText(3).isBlank() ? Long.valueOf(selectedItem.getText(3)):null);
-		patientEntity.setTelephoneNumber(phNums);
-		List<AddressEntity> adrs = new ArrayList<>();
-		List<GovtIdEntity> govt = new ArrayList<>();
+
+		HttpResponse<String> response;
+		try {
+			response = PatientHttpClient.getPatientDetailsById(Long.valueOf(selectedItem.getText(0)));
+
+			if (response.statusCode() == 200) {
+				ObjectMapper mapper = new ObjectMapper();
+				patientEntity = mapper.readValue(response.body(), new TypeReference<PatientEntity>() {
+				});
+			}
+		} catch (NumberFormatException | IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+
 		return patientEntity;
 	}
 
@@ -219,7 +233,6 @@ public class PatientManagementApplication {
 		String id = selectedItem.getText(0);
 
 		try {
-			System.out.println("selected item id : " + id);
 			HttpResponse<String> response = PatientHttpClient.deletePatientDetails(Long.valueOf(id));
 			if (response.statusCode() == 500) {
 				openDialog("patient not found");
@@ -296,14 +309,11 @@ public class PatientManagementApplication {
 			openDialog("Please type patient ID");
 		} else {
 			try {
-				System.out.println(text.getText());
 				HttpResponse<String> response = PatientHttpClient.getPatientDetailsById(Long.valueOf(text.getText()));
-				// populatePatientTable(response);
-				System.out.println(response.toString());
-				if (response.statusCode() == 500) {
-					openDialog("patient not found");
-				} else {
+				if (response.statusCode() == 200) {
 					populatePatientTree(response);
+				} else {
+					openDialog("patient not found");
 				}
 
 			} catch (NumberFormatException e1) {

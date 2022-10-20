@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublisher;
-import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 
 import com.devAcademy.patientManagement.entity.PatientEntity;
@@ -20,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *         HttpClient for PatientManagement APIs
  */
 public class PatientHttpClient {
-	private static final String PATIENT_API_URL = "http://localhost:8080/patient/";
+	private static final String PATIENT_API_URL = "http://localhost:8080/patient";
 	private static final String GET_BY_GOVT_ID_API_URL = "http://localhost:8080/patient/govtId/";
 	private static final String GET_BY_NAME_API_URL = "http://localhost:8080/patient/patientName/";
 
@@ -39,7 +37,7 @@ public class PatientHttpClient {
 	public static HttpResponse<String> getPatientDetailsById(Long id) throws IOException, InterruptedException {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder().GET().header("Content-Type", "application/json")
-				.uri(URI.create(PATIENT_API_URL + id)).build();
+				.uri(URI.create(PATIENT_API_URL + "/" + id)).build();
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 		return response;
@@ -83,7 +81,7 @@ public class PatientHttpClient {
 	public static HttpResponse<String> deletePatientDetails(Long id) throws IOException, InterruptedException {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder().DELETE().header("Content.Type", "application/json")
-				.uri(URI.create(PATIENT_API_URL + id)).build();
+				.uri(URI.create(PATIENT_API_URL + "/" + id)).build();
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 		return response;
@@ -102,7 +100,7 @@ public class PatientHttpClient {
 
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder().PUT(HttpRequest.BodyPublishers.ofString(requestBody))
-				.header("Content.Type", "application/json").uri(URI.create(PATIENT_API_URL)).build();
+				.header("Content-Type", "application/json").uri(URI.create(PATIENT_API_URL)).build();
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 		return response;
@@ -116,16 +114,13 @@ public class PatientHttpClient {
 	 */
 	public static HttpResponse<String> createPatientDetails(PatientEntity patientEntity)
 			throws IOException, InterruptedException {
+
 		ObjectMapper mapper = new ObjectMapper();
 		String requestBody = mapper.writeValueAsString(patientEntity);
-System.out.println("request body in http"+requestBody);
 
-
- //BodyPublisher bp=   HttpRequest.BodyPublishers.ofString(requestBody);
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder().POST(HttpRequest.BodyPublishers.ofString(requestBody))
 				.header("Content-Type", "application/json").uri(URI.create(PATIENT_API_URL)).build();
-	//	System.out.println(request);
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 		return response;
