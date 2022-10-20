@@ -13,6 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotBlank;
 
 /**
@@ -31,8 +33,9 @@ public class PatientEntity {
 	@NotBlank(message = "Name is mandatory")
 	private String name;
 
+	
 	@Column(name = "date_of_birth")
-	private Date dateOfBirth;
+	private String dateOfBirth;
 
 	@Column(name = "telephone_number")
 	private List<Long> telephoneNumber;
@@ -57,7 +60,7 @@ public class PatientEntity {
 	 * @param govtIds
 	 * @param address
 	 */
-	public PatientEntity(Long id, String name, Date dateOfBirth, List<Long> telephoneNumber, List<GovtIdEntity> govtIds,
+	public PatientEntity(Long id, String name, String dateOfBirth, List<Long> telephoneNumber, List<GovtIdEntity> govtIds,
 			List<AddressEntity> address) {
 		super();
 		this.id = id;
@@ -99,14 +102,14 @@ public class PatientEntity {
 	/**
 	 * @return the dateOfBirth
 	 */
-	public Date getDateOfBirth() {
+	public String getDateOfBirth() {
 		return dateOfBirth;
 	}
 
 	/**
 	 * @param dateOfBirth the dateOfBirth to set
 	 */
-	public void setDateOfBirth(Date dateOfBirth) {
+	public void setDateOfBirth(String dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 

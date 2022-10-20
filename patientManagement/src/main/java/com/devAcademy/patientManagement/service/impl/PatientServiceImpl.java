@@ -36,6 +36,7 @@ public class PatientServiceImpl implements PatientService {
 	@Override
 	public PatientEntity createPatientDetails(PatientEntity patientEntity)
 			throws GovtIdOrReasonForNotSharingRequiredException {
+		System.out.println("in service impl");
 		if (patientEntity.getGovtIds() == null || patientEntity.getGovtIds().isEmpty()) {
 			throw new GovtIdOrReasonForNotSharingRequiredException("Govt ID or Reason for not sharing ID is required");
 		} else {

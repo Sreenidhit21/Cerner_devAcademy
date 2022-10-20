@@ -5,6 +5,7 @@ package com.devAcademy.patientManagement.ui;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -43,6 +44,7 @@ public class PatientManagementApplication {
 	private static Text text;
 	private static Tree tree;
 	private static TreeItem selectedItem;
+	private static Display display;
 
 	/**
 	 * 
@@ -57,17 +59,12 @@ public class PatientManagementApplication {
 	 */
 	public static void main(String[] args) {
 
-		Display display = Display.getDefault();
+		display = Display.getDefault();
 		Shell shell = new Shell();
 		shell.setSize(650, 500);
 		shell.setText("Patient Management Applications");
 
-		Shell createUpdateShell = new Shell();
-		createUpdateShell.setSize(650, 500);
-		createUpdateShell.setText("Create_Update Patient Details");
-
-		setContentOnMainShell(shell, createUpdateShell);
-		CreateUpdatePatient.setContentOnCreateUpdateShell(createUpdateShell);
+		setContentOnMainShell(shell);
 
 		shell.open();
 		shell.layout();
@@ -81,13 +78,17 @@ public class PatientManagementApplication {
 		}
 	}
 
-	private static void setContentOnMainShell(Shell shell, Shell createUpdateShell) {
+	private static void setContentOnMainShell(Shell shell) {
 		Button btnCreatePatient = new Button(shell, SWT.PUSH);
 		btnCreatePatient.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				// createUpdatePatient.newShell
-				createUpdateShell.open();
+				tree.removeAll();
+//				btnDeletePatient.setSelection(false);
+				// btnUpdatePatient.setSelection(false);
+				// btnViewPatient.setSelection(false);
+				PatientEntity patientEntity = new PatientEntity();
+				CreateUpdatePatient.setContentOnCreateUpdateShell(display, patientEntity, false);
 
 			}
 		});
@@ -101,7 +102,22 @@ public class PatientManagementApplication {
 		btnUpdatePatient.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				
+				//tree.removeAll();
+				PatientEntity patientEntity =  treeItemToPatientEntityMapping();
+				CreateUpdatePatient.setContentOnCreateUpdateShell(display, patientEntity, false);
+			}
+
+		});
+
+		Button btnViewPatient = new Button(shell, SWT.PUSH);
+		btnViewPatient.setEnabled(false);
+		btnViewPatient.setBounds(426, 21, 100, 25);
+		btnViewPatient.setText("View Patient");
+		btnViewPatient.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				PatientEntity patientEntity =  treeItemToPatientEntityMapping();
+				CreateUpdatePatient.setContentOnCreateUpdateShell(display, patientEntity, true);
 			}
 
 		});
@@ -113,17 +129,17 @@ public class PatientManagementApplication {
 		btnDeletePatient.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				
+
 				deletePatientById();
 				btnDeletePatient.setSelection(false);
 				btnUpdatePatient.setSelection(false);
+				btnViewPatient.setSelection(false);
 			}
 
 		});
 
 		text = new Text(shell, SWT.BORDER);
 		text.setBounds(285, 96, 148, 21);
-		// text.setEditable(false);
 
 		Label lblSearchPatient = new Label(shell, SWT.NONE);
 		lblSearchPatient.setBounds(10, 67, 349, 15);
@@ -156,12 +172,12 @@ public class PatientManagementApplication {
 					tree.removeAll();
 					btnDeletePatient.setSelection(false);
 					btnUpdatePatient.setSelection(false);
+					btnViewPatient.setSelection(false);
 					if (btnPatientId.getSelection()) {
 						getPatientById();
-					}
-					else if(btnGovtId.getSelection()) {
+					} else if (btnGovtId.getSelection()) {
 						getPatientByGovtId();
-					}else if(btnPatientName.getSelection()) {
+					} else if (btnPatientName.getSelection()) {
 						getPatientByName();
 					}
 				}
@@ -174,27 +190,41 @@ public class PatientManagementApplication {
 		tree.setHeaderVisible(true);
 		tree.setLinesVisible(true);
 		setTreeColumn();
-		tree.addListener (SWT.MouseDown, event -> {
-			Point point = new Point (event.x, event.y);
-			selectedItem = tree.getItem (point);
+		tree.addListener(SWT.MouseDown, event -> {
+			Point point = new Point(event.x, event.y);
+			selectedItem = tree.getItem(point);
 			if (selectedItem != null) {
 				btnDeletePatient.setEnabled(true);
 				btnUpdatePatient.setEnabled(true);
-				System.out.println ("Mouse down: " + selectedItem);
+				btnViewPatient.setEnabled(true);
 			}
 		});
 	}
 	
+	public static PatientEntity treeItemToPatientEntityMapping() {
+		PatientEntity patientEntity = new PatientEntity();
+		System.out.println("selected item id"+selectedItem.getText(0));
+		patientEntity.setId(Long.valueOf(selectedItem.getText(0)));
+		patientEntity.setName(selectedItem.getText(1));
+		patientEntity.setDateOfBirth(selectedItem.getText(2));
+		List<Long> phNums = new ArrayList<>();
+		phNums.add(selectedItem.getText(3)!=null &&! selectedItem.getText(3).isBlank() ? Long.valueOf(selectedItem.getText(3)):null);
+		patientEntity.setTelephoneNumber(phNums);
+		List<AddressEntity> adrs = new ArrayList<>();
+		List<GovtIdEntity> govt = new ArrayList<>();
+		return patientEntity;
+	}
+
 	private static void deletePatientById() {
-		String id =selectedItem.getText(0);
-		
+		String id = selectedItem.getText(0);
+
 		try {
-			System.out.println("selected item id : " +id);
-			HttpResponse<String> response =PatientHttpClient.deletePatientDetails(Long.valueOf(id));
-			if(response.statusCode()==500) {
+			System.out.println("selected item id : " + id);
+			HttpResponse<String> response = PatientHttpClient.deletePatientDetails(Long.valueOf(id));
+			if (response.statusCode() == 500) {
 				openDialog("patient not found");
-			}else {
-				openDialog("patient with id "+id+" deleted successfully" );
+			} else {
+				openDialog("patient with id " + id + " deleted successfully");
 				tree.removeAll();
 			}
 		} catch (NumberFormatException e) {
@@ -284,7 +314,7 @@ public class PatientManagementApplication {
 			}
 		}
 	}
-	
+
 	private static void getPatientByGovtId() {
 		if (text.getText().isBlank()) {
 			openDialog("Please type Govt ID");
@@ -302,7 +332,7 @@ public class PatientManagementApplication {
 			}
 		}
 	}
-	
+
 	private static void getPatientByName() {
 		if (text.getText().isBlank()) {
 			openDialog("Please type Patient name");
@@ -320,13 +350,13 @@ public class PatientManagementApplication {
 			}
 		}
 	}
-	
+
 	private static void populatePatientTreeForMultipleItem(HttpResponse<String> response)
 			throws JsonMappingException, JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 		List<PatientEntity> patientEnties = mapper.readValue(response.body(), new TypeReference<List<PatientEntity>>() {
-		});		
-		for(PatientEntity patientEntity:patientEnties) {
+		});
+		for (PatientEntity patientEntity : patientEnties) {
 			TreeItem item = new TreeItem(tree, SWT.NONE);
 			item.setText(getPatientItem(patientEntity, 0));
 			TreeItem subItem = new TreeItem(item, SWT.NONE);
@@ -334,7 +364,7 @@ public class PatientManagementApplication {
 		}
 	}
 
-	private static void populatePatientTree(HttpResponse<String> response)
+	public static void populatePatientTree(HttpResponse<String> response)
 			throws JsonMappingException, JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 		PatientEntity patientEntity = mapper.readValue(response.body(), new TypeReference<PatientEntity>() {
@@ -382,7 +412,7 @@ public class PatientManagementApplication {
 		};
 	}
 
-	private static void openDialog(String message) {
+	public static void openDialog(String message) {
 		Shell dialog = new Shell();
 		dialog.setText("Alert");
 		dialog.setSize(350, 100);
@@ -412,7 +442,6 @@ public class PatientManagementApplication {
 		});
 
 		dialog.open();
-		// dialog.pack();
 	}
 
 }

@@ -94,6 +94,7 @@ public class PatientController {
 	@PostMapping
 	public PatientEntity createPatientDetails(@RequestBody @Validated PatientEntity patientEntity)
 			throws GovtIdOrReasonForNotSharingRequiredException {
+		System.out.println("create patient in controller ");
 		return patientService.createPatientDetails(patientEntity);
 	}
 
