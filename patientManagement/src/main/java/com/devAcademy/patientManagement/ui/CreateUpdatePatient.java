@@ -82,6 +82,7 @@ public class CreateUpdatePatient {
 
 		txtName = new Text(shell, SWT.BORDER);
 		txtName.setBounds(210, 60, 200, 19);
+		txtName.setData("org.eclipse.swtbot.widget.key","txtName");
 
 		Label lblDateOfBirth = new Label(shell, SWT.NONE);
 		lblDateOfBirth.setBounds(30, 80, 78, 15);
@@ -201,9 +202,11 @@ public class CreateUpdatePatient {
 		Label lblGovtIdType = new Label(shell, SWT.NONE);
 		lblGovtIdType.setBounds(33, 400, 75, 15);
 		lblGovtIdType.setText("Govt ID type");
+		
 
 		txtGovtIdType = new Text(shell, SWT.BORDER);
 		txtGovtIdType.setBounds(210, 400, 200, 19);
+		txtGovtIdType.setData("org.eclipse.swtbot.widget.key","txtGovtIdType");
 
 		Label lblGovtId = new Label(shell, SWT.NONE);
 		lblGovtId.setBounds(33, 420, 149, 15);
@@ -211,6 +214,7 @@ public class CreateUpdatePatient {
 
 		txtGovtId = new Text(shell, SWT.BORDER);
 		txtGovtId.setBounds(210, 420, 200, 19);
+		txtGovtId.setData("org.eclipse.swtbot.widget.key","txtGovtId");
 
 		Label lblReason = new Label(shell, SWT.NONE);
 		lblReason.setBounds(33, 440, 149, 15);
@@ -279,26 +283,26 @@ public class CreateUpdatePatient {
 
 	private static void disableAllText() {
 		txtId.setEnabled(false);
-		txtName.setEditable(false);
+		txtName.setEnabled(false);
 		txtDateOfBirth.setEnabled(false);
-		txtPhoneNumber.setEditable(false);
-		txtAPhoneNumber.setEditable(false);
-		txtHouseNumber.setEditable(false);
-		txtHouse2.setEditable(false);
-		txtCity.setEditable(false);
-		txtCity2.setEditable(false);
-		txtState.setEditable(false);
+		txtPhoneNumber.setEnabled(false);
+		txtAPhoneNumber.setEnabled(false);
+		txtHouseNumber.setEnabled(false);
+		txtHouse2.setEnabled(false);
+		txtCity.setEnabled(false);
+		txtCity2.setEnabled(false);
+		txtState.setEnabled(false);
 		txtState2.setEnabled(false);
-		txtCountry.setEditable(false);
-		txtCountry2.setEditable(false);
-		txtPin.setEditable(false);
-		txtPin2.setEditable(false);
-		txtGovtId.setEditable(false);
-		txtGovtId1.setEditable(false);
+		txtCountry.setEnabled(false);
+		txtCountry2.setEnabled(false);
+		txtPin.setEnabled(false);
+		txtPin2.setEnabled(false);
+		txtGovtId.setEnabled(false);
+		txtGovtId1.setEnabled(false);
 		txtGovtIdType.setEnabled(false);
-		txtGovtIdType1.setEditable(false);
-		txtReason.setEditable(false);
-		txtReason1.setEditable(false);
+		txtGovtIdType1.setEnabled(false);
+		txtReason.setEnabled(false);
+		txtReason1.setEnabled(false);
 	}
 
 	private static void createPatientDetails(PatientEntity patientEntity) {

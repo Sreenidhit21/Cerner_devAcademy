@@ -13,7 +13,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,7 +66,7 @@ class PatientControllerTest {
 		List<Long> phone = new ArrayList<>();
 		phone.add(3456783489l);
 		Optional<PatientEntity> patientEntity = Optional.ofNullable(
-				new PatientEntity(345l, "preethi", new Date(1984 - 01 - 05), phone, govtIdEntities, addressEntities));
+				new PatientEntity(345l, "preethi", "1984 - 01 - 05", phone, govtIdEntities, addressEntities));
 
 		when(patientServiceImpl.getPatientDetailsById(anyLong())).thenReturn(patientEntity);
 
@@ -91,7 +90,7 @@ class PatientControllerTest {
 		addressEntities.add(addressEntity);
 		List<Long> phone = new ArrayList<>();
 		phone.add(3456783489l);
-		PatientEntity patientEntity = new PatientEntity(345l, "preethi", new Date(1984 - 01 - 05), phone,
+		PatientEntity patientEntity = new PatientEntity(345l, "preethi", "1984 - 01 - 05", phone,
 				govtIdEntities, addressEntities);
 
 		when(patientServiceImpl.getPatientDetailsByGovtId(anyString())).thenReturn(patientEntity);
@@ -116,7 +115,7 @@ class PatientControllerTest {
 		addressEntities.add(addressEntity);
 		List<Long> phone = new ArrayList<>();
 		phone.add(3456783489l);
-		PatientEntity patientEntity = new PatientEntity(345l, "preethi", new Date(1984 - 01 - 05), phone,
+		PatientEntity patientEntity = new PatientEntity(345l, "preethi", "1984 - 01 - 05", phone,
 				govtIdEntities, addressEntities);
 		List<PatientEntity> entities = new ArrayList<>();
 		entities.add(patientEntity);
@@ -155,7 +154,7 @@ class PatientControllerTest {
 		addressEntities.add(addressEntity);
 		List<Long> phone = new ArrayList<>();
 		phone.add(3456783489l);
-		PatientEntity patientEntity = new PatientEntity(345l, "preethi", new Date(1984 - 01 - 05), phone,
+		PatientEntity patientEntity = new PatientEntity(345l, "preethi", "1984 - 01 - 05", phone,
 				govtIdEntities, addressEntities);
 
 		when(patientServiceImpl.createPatientDetails(any())).thenReturn(patientEntity);
@@ -178,7 +177,7 @@ class PatientControllerTest {
 		addressEntities.add(addressEntity);
 		List<Long> phone = new ArrayList<>();
 		phone.add(3456783489l);
-		PatientEntity patientEntity = new PatientEntity(345l, "preethi", new Date(1984 - 01 - 05), phone,
+		PatientEntity patientEntity = new PatientEntity(345l, "preethi", "1984 - 01 - 05", phone,
 				govtIdEntities, addressEntities);
 
 		when(patientServiceImpl.updatePatientDetails(any())).thenReturn(patientEntity);

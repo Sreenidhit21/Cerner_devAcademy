@@ -77,7 +77,10 @@ public class PatientManagementApplication {
 		}
 	}
 
-	private static void setContentOnMainShell(Shell shell) {
+	/**
+	 * @param shell
+	 */
+	public static void setContentOnMainShell(Shell shell) {
 		Button btnCreatePatient = new Button(shell, SWT.PUSH);
 
 		Button btnUpdatePatient = new Button(shell, SWT.PUSH);
@@ -146,6 +149,7 @@ public class PatientManagementApplication {
 
 		text = new Text(shell, SWT.BORDER);
 		text.setBounds(285, 96, 148, 21);
+		text.setData("org.eclipse.swtbot.widget.key","text");
 
 		Label lblSearchPatient = new Label(shell, SWT.NONE);
 		lblSearchPatient.setBounds(10, 67, 349, 15);
@@ -194,6 +198,7 @@ public class PatientManagementApplication {
 		tree.setBounds(10, 133, 500, 300);
 		tree.setHeaderVisible(true);
 		tree.setLinesVisible(true);
+		tree.setData("org.eclipse.swtbot.widget.key","tree");
 		setTreeColumn();
 		tree.addListener(SWT.MouseDown, event -> {
 			Point point = new Point(event.x, event.y);
@@ -210,6 +215,9 @@ public class PatientManagementApplication {
 		});
 	}
 
+	/**
+	 * @return
+	 */
 	public static PatientEntity treeItemToPatientEntityMapping() {
 		PatientEntity patientEntity = new PatientEntity();
 
@@ -229,6 +237,9 @@ public class PatientManagementApplication {
 		return patientEntity;
 	}
 
+	/**
+	 * 
+	 */
 	private static void deletePatientById() {
 		String id = selectedItem.getText(0);
 
@@ -249,6 +260,9 @@ public class PatientManagementApplication {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private static void setTreeColumn() {
 		TreeColumn id = new TreeColumn(tree, SWT.LEFT);
 		id.setText("ID");
@@ -304,6 +318,9 @@ public class PatientManagementApplication {
 
 	}
 
+	/**
+	 * 
+	 */
 	private static void getPatientById() {
 		if (text.getText().isBlank()) {
 			openDialog("Please type patient ID");
